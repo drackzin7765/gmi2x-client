@@ -1,6 +1,7 @@
 # cuocx
 [CUOCX] A client extension for COD UO 1.51
-
+- I was bored so I made this :D
+  
 A client extension for [CoDUO](https://en.wikipedia.org/wiki/Call_of_Duty:_United_Offensive)
 ### Adding security, fixes, and features
 Supported game version: **COD UO 1.151**
