@@ -11,6 +11,7 @@ ___
 ### Current features
 - New commands: ``lookback``, ``minimize``
 - Unlocked cvars: ``cg_fov``, ``cg_thirdperson``, ``cg_thirdpersonangle``
+- Clean ``cg_drawFPS`` cvar (if set to 3 it will only show the fps nothing else)
 ___
 
 
