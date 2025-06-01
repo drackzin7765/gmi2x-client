@@ -1,5 +1,7 @@
 #pragma once
 
+#include <windows.h>
+
 #define MAX_MSGLEN 16384
 
 
@@ -99,12 +101,18 @@ char* Cvar_VariableString(const char*);
 int Cvar_VariableIntegerValue(const char* var_name);
 float Cvar_VariableValue(const char *var_name);
 
-/*
+//extern DWORD uo_game_mp;
+extern DWORD uo_cgame_mp;
+
+#define GAME_OFF(x) (uo_game_mp + (x - 0x20000000))
+#define CGAME_OFF(x) (uo_cgame_mp + (x - 0x30000000))
+
+
 typedef void(*Com_Printf_t)(const char*, ...);
 extern Com_Printf_t Com_Printf;
 typedef void(*Com_DPrintf_t)(const char*, ...);
 extern Com_DPrintf_t Com_DPrintf;
-*/
+
 
 typedef void(*Com_Error_t)(int, const char*, ...);
 extern Com_Error_t Com_Error;

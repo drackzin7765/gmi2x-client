@@ -1,5 +1,6 @@
 #include <windows.h>
 
+
 static void __nop(unsigned int start, unsigned int end)
 {
 	int len = (end < start) ? end : (end - start);

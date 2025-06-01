@@ -3,9 +3,10 @@
 #include <windows.h>
 #include "functions.hpp"
 
-//Com_DPrintf_t Com_DPrintf = (Com_DPrintf_t)0x435820;
-//Com_Printf_t Com_Printf = (Com_Printf_t)0x4357B0;
+Com_DPrintf_t Com_DPrintf = (Com_DPrintf_t)0x439D20;
+Com_Printf_t Com_Printf = (Com_Printf_t)0x439CC0;
 Com_Error_t Com_Error = (Com_Error_t)0x0043a020;
+
 
 Cmd_AddCommand_t Cmd_AddCommand = (Cmd_AddCommand_t)0x0042c3b0;
 

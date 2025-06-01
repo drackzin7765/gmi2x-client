@@ -11,6 +11,9 @@ echo                  BUILDING CUOCX.DLL
 echo ##### COMPILE HOOKING.CPP #####
 g++ -c -g hooking.cpp -o objects/hooking.opp
 
+echo #### COMPILE CGAME.CPP ####
+g++ -c -g cgame.cpp -o objects/cgame.opp
+
 echo #### COMPILE CVAR.CPP ####
 g++ -c -g cvar.cpp -o objects/cvar.opp
 
@@ -31,11 +34,11 @@ g++ -c -g cuocx.cpp -o objects/cuocx.opp
 
 echo #### COMPILE CUOCX_INJ.EXE ####
 windres resources.rc -O coff -o objects/resources.o
-g++ -o ..\bin\injector.exe injector.cpp objects/resources.o -mwindows -lcomdlg32 -luser32 -lkernel32 -ladvapi32
-
+g++ -o ..\bin\cuocx.exe injector.cpp objects/resources.o -mwindows -lcomdlg32 -luser32 -lkernel32 -ladvapi32
 
 echo ##### LINK CUOCX_LIB.dll #####
-g++ -m32 -shared -o ..\bin\cuocx_lib.dll objects\*.opp
+g++ -m32 -shared -o ..\bin\cuocx_lib.dll objects\*.opp -lwinmm -lImageHlp
+
 
 echo                           DONE
 echo ================================================================
