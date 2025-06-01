@@ -6,11 +6,26 @@ A client extension for [CoDUO](https://en.wikipedia.org/wiki/Call_of_Duty:_Unite
 ### Adding security, fixes, and features
 Supported game version: **COD UO 1.151**
 ___
+
+
+### Current features
+- New commands: ``lookback``, ``minimize``
+- Unlocked cvars: ``cg_fov``, ``cg_thirdperson``, ``cg_thirdpersonangle``
+___
+
+
+### Building
+- [See wiki](https://github.com/SADMANGaming/gmi2x-client/wiki/Compiling)
+___
+
+
 ### Installation and usage
 - Download the binaries from the latest release.
 - Put the binaries in your COD UO folder.
 - Run Injector.exe!
 ___
+
+
 #### References
 - [c1cx by raphael](https://github.com/SADMANGaming/c1cx)
 - [codextended-client-uo](https://github.com/xtnded/codextended-client-uo)
