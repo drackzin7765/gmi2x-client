@@ -23,6 +23,27 @@
 #define CVAR_SERVERINFO_NOUPDATE        8192    // gordon: WONT automatically send this to clients, but server browsers will see it
 
 
+#define MAX_STRING_CHARS    1024 // max length of a string passed to Cmd_TokenizeString
+#define MAX_STRING_TOKENS   256 // max tokens resulting from Cmd_TokenizeString
+#define MAX_RELIABLE_COMMANDS 64
+#define MAX_INFO_STRING     1024
+#define MAX_INFO_KEY        1024
+#define MAX_INFO_VALUE      1024
+
+#define BIG_INFO_STRING     8192 // used for system info key only
+#define BIG_INFO_KEY        8192
+#define BIG_INFO_VALUE      8192
+
+
+#define Q_COLOR_ESCAPE  '^'
+#define Q_IsColorString( p )  ( p && *( p ) == Q_COLOR_ESCAPE && *( ( p ) + 1 ) && *( ( p ) + 1 ) != Q_COLOR_ESCAPE )
+
+#define DotProduct( x,y )         ( ( x )[0] * ( y )[0] + ( x )[1] * ( y )[1] + ( x )[2] * ( y )[2] )
+#define VectorCopy( a,b )         ( ( b )[0] = ( a )[0],( b )[1] = ( a )[1],( b )[2] = ( a )[2] )
+
+#define clc_stringData ((PCHAR)0x0495e6f4)
+#define clc_stringOffsets ((PINT)0x0495c6f4)
+#define cs1 (clc_stringData + clc_stringOffsets[1])
 
 typedef enum
 {
@@ -86,6 +107,9 @@ typedef struct cvar_s
 	struct cvar_s* hashNext;
 } cvar_t;
 
+typedef float vec_t;
+typedef vec_t vec2_t[2];
+typedef vec_t vec3_t[3];
 
 typedef void(*Cvar_Set_t)(const char*, const char*);
 typedef cvar_t* (*Cvar_Get_t)(const char*, const char*, int);
@@ -100,8 +124,15 @@ extern Cvar_FindVar_t Cvar_FindVar;
 char* Cvar_VariableString(const char*);
 int Cvar_VariableIntegerValue(const char* var_name);
 float Cvar_VariableValue(const char *var_name);
+void __cdecl Com_sprintf(char* dest, int size, const char* fmt, ...);
+void Info_RemoveKey(char* s, const char* key);
+void Info_RemoveKey_Big(char* s, const char* key);
+void Info_SetValueForKey(char *s, const char *key, const char *value);
+const char* Info_ValueForKey(const char* s, const char* key); //FIXME: overflow check?
+int Q_stricmpn(const char* s1, const char* s2, int n);
+int Q_stricmp(const char* s1, const char* s2);
 
-//extern DWORD uo_game_mp;
+extern DWORD uo_game_mp;
 extern DWORD uo_cgame_mp;
 
 #define GAME_OFF(x) (uo_game_mp + (x - 0x20000000))

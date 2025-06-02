@@ -24,6 +24,10 @@ HMODULE WINAPI hLoadLibraryA(LPCSTR lpLibFileName) {
             void CG_Init(DWORD);
             CG_Init(pBase);
         }
+        else if (strstr(lpLibFileName, "uo_game_mp") != NULL) {
+            void G_Init(DWORD);
+            G_Init(pBase);
+        }
     }
 
     return hModule;

@@ -1,6 +1,5 @@
 #include "cgame.hpp"
 #include "client.hpp"
-#include "cuocx.hpp"
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 
@@ -41,9 +40,18 @@ void _CG_DrawFPS(float y)
 			{
 				total = 1;
 			}
-			fps = 1000 * FPS_FRAMES / total;
+			fps = 1000 * FPS_FRAMES / total; 
 
-			const char* s = va("%ifps", fps);
+			const char *s = NULL;
+
+			if (fps <= 59) {
+    			s = va("^1%ifps", fps);
+			} else {
+    			s = va("%ifps", fps);
+			}
+
+
+			//const char* s = va("%ifps", fps);
 
 			void(*CG_DrawBigString)(float x, float y, const char* s, float alpha);
 			*(int*)&CG_DrawBigString = CGAME_OFF(0x3001cf10);
@@ -58,11 +66,114 @@ void _CG_DrawFPS(float y)
 	}
 }
 
+
+// BOUNCE
+#include <math.h>
+/*by xoxor4d*/
+void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out)
+{
+	float backoff;
+	float change;
+	int i;
+	float overbounce = 1.001f;
+
+	backoff = DotProduct(in, normal);
+	if (backoff < 0)
+	{
+		backoff *= overbounce;
+	}
+	else
+	{
+		backoff /= overbounce;
+	}
+
+	for (i = 0; i < 3; i++)
+	{
+		change = normal[i] * backoff;
+		out[i] = in[i] - change;
+	}
+}
+void PM_ProjectVelocity(vec3_t in, vec3_t normal, vec3_t out)
+{
+	float speedXY, DotNormalXY, normalisedNormalXY, projectionZ, projectionXYZ;
+	speedXY = in[1] * in[1] + in[0] * in[0];
+	if ((normal[2]) < 0.001f || (speedXY == 0.0f))
+	{
+		VectorCopy(in, out);
+	}
+	else
+	{
+		DotNormalXY = normal[1] * in[1] + in[0] * normal[0];
+		normalisedNormalXY = -DotNormalXY / normal[2];
+		projectionZ = in[2] * in[2] + speedXY;
+		projectionXYZ = sqrtf((projectionZ / (speedXY + normalisedNormalXY * normalisedNormalXY)));
+
+		if (projectionXYZ < 1.0f || normalisedNormalXY < 0.0f || in[2] > 0.0f)
+		{
+			out[0] = projectionXYZ * in[0];
+			out[1] = projectionXYZ * in[1];
+			out[2] = projectionXYZ * normalisedNormalXY;
+		}
+	}
+}
+
+uint32_t PM_Bounce(vec3_t in, vec3_t normal, vec3_t out)
+{
+    int x_cl_bounce = atoi(Info_ValueForKey(cs1, "x_cl_bounce"));
+    if (x_cl_bounce)
+    {
+        PM_ProjectVelocity(in, normal, out);
+    }
+    else
+    {
+        PM_ClipVelocity(in, normal, out);
+    }
+    return CGAME_OFF(0x3000f5ec);
+}
+
+
+
+
+__attribute__((naked)) void PM_Bounce_Stub()
+{
+    __asm__ __volatile__ (
+        "push %%esi\n\t"    // push out
+        "push %%ecx\n\t"    // push normal
+        "push %%edx\n\t"    // push in
+        "call *%0\n\t"      // indirect call via register holding PM_Bounce
+        "add $12, %%esp\n\t"
+        "push %%eax\n\t"
+        "ret\n\t"
+        :
+        : "r"((void*)PM_Bounce)
+        : "eax", "ecx", "edx", "esi"
+    );
+}
+
+
+/*
+
+	__asm
+	{
+		push esi; // out
+		push ecx; // normal
+		push edx; // in
+		call PM_Bounce;
+		add esp, 12;
+		push eax
+			retn;
+	}
+
+*/
+
 void CG_Init(DWORD base) {
 	uo_cgame_mp = base;
 	
 	
 	__call(CGAME_OFF(0x3001875c), (int)_CG_DrawFPS);
+
+//    __jmp(CGAME_OFF(0x3000f5e7), (int)PM_Bounce_Stub);
+
 
 	//__call(CGAME_OFF(0x30008D72), (int)JumpHeightCrap);
 	*(UINT32*)CGAME_OFF(0x3008523C) = CVAR_ARCHIVE; // Enable cg_fov
