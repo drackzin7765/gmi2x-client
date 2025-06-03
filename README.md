@@ -12,6 +12,7 @@ ___
 - New commands: ``lookback``, ``minimize``
 - Unlocked cvars: ``cg_fov``, ``cg_thirdperson``, ``cg_thirdpersonangle``
 - Clean ``cg_drawFPS`` cvar (if set to 3 it will only show the fps nothing else)
+- FPS warning: if your fps is less than 59 it will show the fps in red color (like CoD 2)
 ___
 
 
