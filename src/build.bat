@@ -6,41 +6,41 @@ md objects
 
 
 echo ================================================================
-echo                  BUILDING CUOCX.DLL
+echo                  BUILDING GMI2x-Client.DLL
 
 echo ##### COMPILE HOOKING.CPP #####
-g++ -c -m32 -g hooking.cpp -o objects/hooking.opp
-
-echo #### COMPILE CGAME.CPP ####
-g++ -c -m32 -g cgame.cpp -o objects/cgame.opp
-
-echo #### COMPILE GAME.CPP ####
-g++ -c -m32 -g game.cpp -o objects/game.opp
+g++ -c -g hooking.cpp -o objects/hooking.opp
 
 echo #### COMPILE CVAR.CPP ####
-g++ -c -m32 -g cvar.cpp -o objects/cvar.opp
+g++ -c -g cvar.cpp -o objects/cvar.opp
 
 echo ##### COMPILE FUNCTIONS.CPP #####
-g++ -c -m32 -g functions.cpp -o objects/functions.opp
+g++ -c -g functions.cpp -o objects/functions.opp
 
 echo ##### COMPILE CL_COMMAND.CPP #####
-g++ -c -m32 -g cl_command.cpp -o objects/cl_command.opp
+g++ -c -g cl_command.cpp -o objects/cl_command.opp
 
 rem echo ##### COMPILE QVSNPRINTF.C #####
 rem g++ -c -g .\lib\qvsnprintf.c -o objects/qvsnprintf.opp
 
 echo ##### COMPILE CLIENT.CPP #####
-g++ -c -m32 -g client.cpp -o objects/client.opp
+g++ -c -g client.cpp -o objects/client.opp
 
-echo ##### COMPILE CUOCX.CPP #####
-g++ -c -m32 -g cuocx.cpp -o objects/cuocx.opp
+echo #### COMPILE GAME.CPP ####
+g++ -c -g game.cpp -o objects/game.opp
 
-echo #### COMPILE CUOCX_INJ.EXE ####
+echo #### COMPILE CGAME.CPP ####
+g++ -c -g cgame.cpp -o objects/cgame.opp
+
+echo ##### COMPILE GMI2X-CL.CPP #####
+g++ -c -g gmi2x-cl.cpp -o objects/gmi2x-cl.opp
+
+echo #### COMPILE GMI2x-Client.EXE ####
 windres resources.rc -O coff -o objects/resources.o
-g++ -o ..\bin\cuocx.exe injector.cpp objects/resources.o -mwindows -lcomdlg32 -luser32 -lkernel32 -ladvapi32
+g++ -o ..\bin\gmi2x-client.exe injector.cpp objects/resources.o -mwindows -lcomdlg32 -luser32 -lkernel32 -ladvapi32
 
-echo ##### LINK CUOCX_LIB.dll #####
-g++ -m32 -shared -o ..\bin\cuocx_lib.dll objects\*.opp -lwinmm -lImageHlp
+echo ##### LINK GMI2X-CLIENT.dll #####
+g++ -m32 -shared -o ..\bin\gmi2x-client.dll objects\*.opp -lwinmm
 
 
 echo                           DONE

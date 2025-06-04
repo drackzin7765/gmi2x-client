@@ -49,7 +49,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     std::string dllPath(modulePath);
     size_t pos = dllPath.find_last_of('\\');
     if (pos != std::string::npos)
-        dllPath.replace(pos + 1, std::string::npos, "cuocx_lib.dll");
+        dllPath.replace(pos + 1, std::string::npos, "gmi2x-client.dll");
 
     std::string iniPath(modulePath);
     pos = iniPath.find_last_of('\\');

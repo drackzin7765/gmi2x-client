@@ -1,9 +1,21 @@
-#include "cgame.hpp"
 #include "client.hpp"
+#include "gmi2x-cl.hpp"
+#include <windows.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 
 DWORD uo_cgame_mp;
+
+extern cvar_t* cg_drawWeaponSelection;
+void _CG_DrawWeaponSelect()
+{
+	if (cg_drawWeaponSelection->integer)
+	{
+		void(*CG_DrawWeaponSelect)(void);
+		*(int*)&CG_DrawWeaponSelect = CGAME_OFF(0x30046bb0);
+		CG_DrawWeaponSelect();
+	}
+}
 
 #define	FPS_FRAMES 4
 extern cvar_t* cg_drawFPS;
@@ -45,9 +57,9 @@ void _CG_DrawFPS(float y)
 			const char *s = NULL;
 
 			if (fps <= 59) {
-    			s = va("^1%ifps", fps);
+    			s = va("^1FPS: %i", fps);
 			} else {
-    			s = va("%ifps", fps);
+    			s = va("FPS: %i", fps);
 			}
 
 
@@ -67,7 +79,8 @@ void _CG_DrawFPS(float y)
 }
 
 
-// BOUNCE
+
+#include <stdint.h>
 #include <math.h>
 /*by xoxor4d*/
 void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out)
@@ -116,39 +129,38 @@ void PM_ProjectVelocity(vec3_t in, vec3_t normal, vec3_t out)
 		}
 	}
 }
-
-uint32_t PM_Bounce(vec3_t in, vec3_t normal, vec3_t out)
+extern "C" __stdcall uint32_t PM_Bounce(vec3_t in, vec3_t normal, vec3_t out)
 {
-    int x_cl_bounce = atoi(Info_ValueForKey(cs1, "x_cl_bounce"));
-    if (x_cl_bounce)
-    {
-        PM_ProjectVelocity(in, normal, out);
-    }
-    else
-    {
-        PM_ClipVelocity(in, normal, out);
-    }
-    return CGAME_OFF(0x3000f5ec);
+	int x_cl_bounce = atoi(Info_ValueForKey(cs1, "x_cl_bounce"));
+	if (x_cl_bounce)
+	{
+		PM_ProjectVelocity(in, normal, out);
+	}
+	else
+	{
+		PM_ClipVelocity(in, normal, out);
+	}
+	return CGAME_OFF(0x3000F5EC);
+	return 0;
 }
-
-
 
 
 __attribute__((naked)) void PM_Bounce_Stub()
 {
-    __asm__ __volatile__ (
-        "push %%esi\n\t"    // push out
-        "push %%ecx\n\t"    // push normal
-        "push %%edx\n\t"    // push in
-        "call *%0\n\t"      // indirect call via register holding PM_Bounce
+	__asm__ __volatile__ (
+        "push %%esi\n\t"
+        "push %%ecx\n\t"
+        "push %%edx\n\t"
+        "call *%0\n\t"
         "add $12, %%esp\n\t"
         "push %%eax\n\t"
         "ret\n\t"
         :
-        : "r"((void*)PM_Bounce)
+        : "r"( (void*)PM_Bounce )
         : "eax", "ecx", "edx", "esi"
     );
 }
+
 
 
 /*
@@ -166,19 +178,32 @@ __attribute__((naked)) void PM_Bounce_Stub()
 
 */
 
+
+/*int Jump_Height_bug(float height) {
+	const char* jump_height = Info_ValueForKey(cs1, "jump_height");
+	if (strlen(jump_height)) {
+		height = atof(jump_height);
+	}
+
+
+	int(*call)(float);
+	*(int*)(&call) = CGAME_OFF(0x30008C70);
+	int result = call(height);
+	return result;
+}*/
+
 void CG_Init(DWORD base) {
 	uo_cgame_mp = base;
 	
-	
+	__jmp(CGAME_OFF(0x3000F5E7), (int)PM_Bounce_Stub); // bloody hell pls work
+
 	__call(CGAME_OFF(0x3001875c), (int)_CG_DrawFPS);
 
-//    __jmp(CGAME_OFF(0x3000f5e7), (int)PM_Bounce_Stub);
+	__call(CGAME_OFF(0x3001c06f), (int)_CG_DrawWeaponSelect);
 
-
-	//__call(CGAME_OFF(0x30008D72), (int)JumpHeightCrap);
+	//__call(CGAME_OFF(0x30008D72), (int)Jump_Height_bug);
 	*(UINT32*)CGAME_OFF(0x3008523C) = CVAR_ARCHIVE; // Enable cg_fov
 	*(UINT32*)CGAME_OFF(0x3008570C) = CVAR_ARCHIVE; // Unlock cg_thirdpersonangle
 	*(UINT32*)CGAME_OFF(0x3008571C) = CVAR_ARCHIVE; // Unlock cg_thirdperson
 
-    Com_Printf("Hooked into CG_INIT \n");
 }

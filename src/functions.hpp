@@ -41,9 +41,21 @@
 #define DotProduct( x,y )         ( ( x )[0] * ( y )[0] + ( x )[1] * ( y )[1] + ( x )[2] * ( y )[2] )
 #define VectorCopy( a,b )         ( ( b )[0] = ( a )[0],( b )[1] = ( a )[1],( b )[2] = ( a )[2] )
 
-#define clc_stringData ((PCHAR)0x0495e6f4)
-#define clc_stringOffsets ((PINT)0x0495c6f4)
+#define cls_realtime ((int*)0x4AD3E80) // 0x155F3E0)
+#define cls_state ((int*)0x4AD3D60)
+#define clc_stringData ((PCHAR)0x495E6F4)
+#define clc_stringOffsets ((PINT)0x495C6F4)
+#define clc_demoplaying ((PINT)0x4DE960C)
+#define cls_numglobalservers ((int*)0x4AD8AA8)
+#define cls_pingUpdateSource ((int*)0x4DC39B4)
+
+#define cs0 (clc_stringData + clc_stringOffsets[0])
 #define cs1 (clc_stringData + clc_stringOffsets[1])
+
+
+#define MAX_QPATH 64
+#define MAX_OSPATH 256
+typedef int fileHandle_t;
 
 typedef enum
 {
@@ -51,10 +63,61 @@ typedef enum
 	qtrue
 } qboolean;
 
-typedef enum
-{
+typedef enum {
+	ET_GENERAL,
+	ET_PLAYER,
+	ET_CORPSE,
+	ET_ITEM,
+	ET_MISSILE,
+	ET_MOVER,
+	ET_PORTAL,
+	ET_INVISIBLE,
+	ET_SCRIPTMOVER,
+	ET_TURRET //???
+} entityTypes;
+
+typedef struct {
+	int unknown; //0
+	byte* data; //4
+	int maxsize; //8 (most likely maxsize value 16384)
+	int cursize; //12 //value 129
+	int readcount; //16 //value 16
+	int bit; //20 //value 0
+} msg_t; //size is 0x18 (24)
+
+typedef enum {
+	STEREO_CENTER,
+	STEREO_LEFT,
+	STEREO_RIGHT
+} stereoFrame_t;
+
+typedef enum {
+	CA_UNINITIALIZED,
+	CA_DISCONNECTED = 0,
+	CA_CONNECTING,
+	CA_CHALLENGING,
+	CA_CONNECTED,
+} connstate_t;
+
+#if 0
+typedef enum {
+	CA_UNINITIALIZED,
+	CA_DISCONNECTED,    // not talking to a server
+	CA_AUTHORIZING,     // not used any more, was checking cd key
+	CA_CONNECTING,      // sending request packets to the server
+	CA_CHALLENGING,     // sending challenge packets to the server
+	CA_CONNECTED,       // netchan_t established, getting gamestate
+	CA_LOADING,         // only during cgame initialization, never during main loop
+	CA_PRIMED,          // got gamestate, waiting for first frame
+	CA_ACTIVE,          // game views should be displayed
+	CA_CINEMATIC        // playing a cinematic or a static pic, not connected to a server
+} connstate_t;
+#endif
+
+
+typedef enum {
 	NA_BOT,
-	NA_BAD, // an address lookup failed
+	NA_BAD,                 // an address lookup failed
 	NA_LOOPBACK,
 	NA_BROADCAST,
 	NA_IP,
@@ -62,11 +125,11 @@ typedef enum
 	NA_BROADCAST_IPX
 } netadrtype_t;
 
-typedef enum
-{
+typedef enum {
 	NS_CLIENT,
 	NS_SERVER
 } netsrc_t;
+
 
 typedef struct
 {
@@ -91,6 +154,91 @@ typedef enum
 	ERR_AUTOUPDATE
 } errorParm_t;
 
+
+typedef struct {
+	netsrc_t	sock;
+
+	int			dropped;			// between last packet and previous
+
+	netadr_t	remoteAddress;
+	int			qport;				// qport value to write when transmitting
+
+									// sequencing variables
+	int			incomingSequence;
+	int			outgoingSequence;
+
+	// incoming fragment assembly buffer
+	int			fragmentSequence;
+	int			fragmentLength;
+	byte		fragmentBuffer[MAX_MSGLEN];
+
+	// outgoing fragment buffer
+	// we need to space out the sending of large fragmented messages
+	qboolean	unsentFragments;
+	int			unsentFragmentStart;
+	int			unsentLength;
+	byte		unsentBuffer[MAX_MSGLEN];
+} netchan_t;
+
+typedef struct {
+
+	int			clientNum;
+	int			lastPacketSentTime;			// for retransmits during connection
+	int			lastPacketTime;				// for timeouts
+
+	netadr_t	serverAddress;
+	int			connectTime;				// for connection retransmits
+	int			connectPacketCount;			// for display on connection dialog
+	char		serverMessage[MAX_STRING_TOKENS];	// for display on connection dialog
+
+	int			challenge;					// from the server to use for connecting
+	int			checksumFeed;				// from the server for checksum calculations
+
+											// these are our reliable messages that go to the server
+	int			reliableSequence;
+	int			reliableAcknowledge;		// the last one the server has executed
+	char		reliableCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
+
+	// server message (unreliable) and command (reliable) sequence
+	// numbers are NOT cleared at level changes, but continue to
+	// increase as long as the connection is valid
+
+	// message sequence is used by both the network layer and the
+	// delta compression layer
+	int			serverMessageSequence;
+
+	// reliable messages received from server
+	int			serverCommandSequence;
+	int			lastExecutedServerCommand;		// last server command grabbed or executed with CL_GetServerCommand
+	char		serverCommands[MAX_RELIABLE_COMMANDS][MAX_STRING_CHARS];
+
+	// file transfer from server
+	fileHandle_t download;
+	char		downloadTempName[MAX_OSPATH];
+	char		downloadName[MAX_OSPATH];
+	int			downloadNumber;
+	int			downloadBlock;	// block we are waiting for
+	int			downloadCount;	// how many bytes we got
+	int			downloadSize;	// how many bytes we got
+	char		downloadList[MAX_INFO_STRING]; // list of paks we need to download
+	qboolean	downloadRestart;	// if true, we need to do another FS_Restart because we downloaded a pak
+
+									// demo information
+	char		demoName[MAX_QPATH];
+	qboolean	spDemoRecording;
+	qboolean	demorecording;
+	qboolean	demoplaying;
+	qboolean	demowaiting;	// don't record until a non-delta message is received
+	qboolean	firstDemoFrameSkipped;
+	fileHandle_t	demofile;
+
+	int			timeDemoFrames;		// counter of rendered frames
+	int			timeDemoStart;		// cls.realtime before first frame
+	int			timeDemoBaseTime;	// each frame will be at this time + frameNum * 50
+
+									// big stuff at end of structure so most offsets are 15 bits or less
+	netchan_t	netchan;
+} clientConnection_t;
 
 typedef struct cvar_s
 {
@@ -132,8 +280,8 @@ const char* Info_ValueForKey(const char* s, const char* key); //FIXME: overflow 
 int Q_stricmpn(const char* s1, const char* s2, int n);
 int Q_stricmp(const char* s1, const char* s2);
 
-extern DWORD uo_game_mp;
 extern DWORD uo_cgame_mp;
+extern DWORD uo_game_mp;
 
 #define GAME_OFF(x) (uo_game_mp + (x - 0x20000000))
 #define CGAME_OFF(x) (uo_cgame_mp + (x - 0x30000000))
