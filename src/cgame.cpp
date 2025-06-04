@@ -57,9 +57,9 @@ void _CG_DrawFPS(float y)
 			const char *s = NULL;
 
 			if (fps <= 59) {
-    			s = va("^1FPS: %i", fps);
+    			s = va("^1%ifps", fps);
 			} else {
-    			s = va("FPS: %i", fps);
+    			s = va("%ifps", fps);
 			}
 
 
