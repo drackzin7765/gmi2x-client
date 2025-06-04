@@ -13,6 +13,8 @@ ___
 - Unlocked cvars: ``cg_fov``, ``cg_thirdperson``, ``cg_thirdpersonangle``
 - Clean ``cg_drawFPS`` cvar (if set to 3 it will only show the fps nothing else)
 - FPS warning: if your fps is less than 59 it will show the fps in red color (like CoD 2)
+- Bouncing
+- cg_drawWeaponSelection cvar: If set to 1 it will not show weapon selection hud on top)
 ___
 
 
@@ -23,8 +25,8 @@ ___
 
 ### Installation and usage
 - Download the binaries from the latest release.
-- Put the binaries in your COD UO folder.
-- Run Injector.exe!
+- Put the binaries in your COD UO folder (gmi2x-client.dll & gmi2x-client.exe).
+- Run gmi2x-client.exe!
 ___
 
 
